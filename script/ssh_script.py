@@ -47,7 +47,7 @@ def key_copy(ip, password):
     cpy = pexpect.spawn('ssh-copy-id -i {ip}'.format(ip=ip))
     try:
         i = cpy.expect(['password', 'yes/no', pexpect.TIMEOUT,
-                        pexpect.EOF], timeout=1)
+                        pexpect.EOF], timeout=100)
         if i == 0:
             cpy.sendline(password + '\n')
             print '\t{ip} Success'.format(ip = ip)

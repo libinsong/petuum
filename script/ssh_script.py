@@ -100,7 +100,7 @@ def close_ip(ip):
             j = cls.expect(['password', pexpect.TIMEOUT,
                             pexpect.EOF], timeout=1)
             if j == 0:
-                print '{ip} ALready CLosed'
+                print '{ip} ALready Closed'
             elif j == 1:
                 cls.sendline('rm -r ~/.ssh\n')
                 print '{ip} Closed'.format(ip=ip)
@@ -108,7 +108,7 @@ def close_ip(ip):
                 print '{ip} Failed, EOF'.format(ip=ip)
         elif i == 2:
             cls.sendline('rm -r ~/.ssh\n'.format(ip=ip))
-            print '{ip} CLosed'.format(ip=ip)
+            print '{ip} Closed'.format(ip=ip)
         elif i == 3:
             print '{ip} Failed, EOF'.format(ip=ip)
     finally:

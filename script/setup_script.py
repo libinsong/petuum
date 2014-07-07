@@ -2,33 +2,124 @@
 # coding=utf-8
 
 '''
-Set up petuum
+Set up petuum project, including preliminaries and compilation
+
+Usage:
+    setup_script.py --lib
+    setup_script.py --archive
+    setup_script.py --petuum
+    setup_script.py --make
+
+Options:
+    -h --help   Print Help Information
+    --lib       Copy Third Party Lib
+    --archive   Copy Archives
+    --petuum    Copy Petuum Project
+    --make      Compile Petuum Project
 '''
 
 
 import pexpect
+import threading
 from docopt import docopt
+from script_config import FILE_COPY, SSH_INFO, PETUUM_PROJECT
 
 
-def copy_file(ip, src, dest):
+
+def copy_dir(ip, src, dest):
     cmd = 'scp -r {src} {ip}:{dest}'.format(src=src, ip=ip,
                                             dest=dest)
-    cpy = pexpect.spawn(cmd, timeout=10)
-    cpy
+    cpy = pexpect.spawn(cmd)
     try:
-        
+        i = cpy.expect([pexpect.TIMEOUT, pexpect.EOF])
+        if i == 0:
+            print '\tCopy Dir Error, TIMEOUT'
     finally:
         cpy.close()
 
 
+def copy_file(ip, src, dest):
+    cmd = 'scp {src} {ip}:{dest}'.format(src=src, ip=ip,
+                                            dest=dest)
+    cpy = pexpect.spawn(cmd)
+    try:
+        i = cpy.expect([pexpect.TIMEOUT, pexpect.EOF])
+        if i == 0:
+            print '\tCopy File Error, TIMEOUT'
+    finally:
+        cpy.close()
 
 
+def make_project(ip):
+    ip_str = ip.replace('.', '-')
+    make = pexpect.spawn('ssh {ip}'.format(ip))
+    try:
+        i = make.expect([ip_str, pexpect.TIMEOUT, pexpect.EOF],
+                        timeout=1)
+        if i == 0:
+            make.sendline('cd petuum\n')
+            make.sendline('make\n')
+            j = make.expect([ip_str, pexpect.TIMEOUT, pexpect.EOF],
+                            timeout=3600)
+            if j == 0:
+                print '\nMake Success'
+            elif j == 1:
+                print '\nMake Failed, TIMEOUT'
+            elif j == 2:
+                print '\nMake Failed, EOF'
+        elif i == 1:
+            print '\nSSH ERROR, TIMEOUT'
+        elif i == 2:
+            print '\nSSH ERROR, EOF'
+    finally:
+        make.close()
 
 
+def copy_third_party_lib():
+    src_path = FILE_COPY['third_party_lib']['from']
+    dest_path = FILE_COPY['third_party_lib']['to']
+    print 'Copy third party lib'
+    for info in SSH_INFO:
+        print '\tcopy lib for {ip}'.format(ip=info['ip'])
+        copy_dir(info['ip'], src_path, dest_path)
+
+
+def copy_archives():
+    src_path = FILE_COPY['archives']['from']
+    dest_path = FILE_COPY['archives']['to']
+    print 'Copy archives'
+    for info in SSH_INFO:
+        print '\tcopy archives for {ip}'.format(ip=info['ip'])
+        copy_dir(info['ip'], src_path, dest_path)
+
+
+def copy_petuum_project():
+    src_path = PETUUM_PROJECT['from']
+    dest_path = PETUUM_PROJECT['to']
+    print 'Copy petuum project'
+    for info in SSH_INFO:
+        print '\tcopy petuum for {ip}'.format(ip=info['ip'])
+        copy_dir(info['ip'], src_path, dest_path)
+
+
+def compile_petuum():
+    print 'Compile petuum project'
+    for info in SSH_INFO:
+        print 'Starting to compile at {ip}'.format(ip=info['ip'])
+        a = threading.Thread(target=make_project,
+                             args=(info['ip']))
+        a.start()
 
 
 def main(args):
-    pass
+    if args['--lib']:
+        copy_third_party_lib()
+    elif args['--archive']:
+        copy_archives()
+    elif args['--petuum']:
+        copy_petuum_project()
+    elif args['--make']:
+        compile_petuum()
 
 
 if __name__ == '__main__':

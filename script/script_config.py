@@ -36,9 +36,9 @@ PC_GROUP = {
 }
 
 SETUP_CMD = [
-    'sudo apt-get install gcc-4.8 g++-4.8\n',
-    'sudo apt-get install autoconf libtool uuid-dev openssh-server\n',
-    'sudo apt-get install libopenmpi-dev libssl-dev\n'
+    'sudo apt-get install gcc-4.8 g++-4.8',
+    'sudo apt-get install autoconf libtool uuid-dev openssh-server',
+    'sudo apt-get install libopenmpi-dev libssl-dev'
 ]
 
 SSH_INFO = [
@@ -46,11 +46,6 @@ SSH_INFO = [
 ]
 
 
-SOURCE_COPY = {
-    'newsrc': 'newsrc',
-    'src': '/etc/apt/sources.list',
-    'dest': '/etc/apt/sources.list.back'
-}
 FILE_COPY = {
     'third_party_lib': {
         'from': '/root/petuum_files/src/',
@@ -61,6 +56,8 @@ FILE_COPY = {
         'to': '/root/'
     }
 }
+
+
 SOURCE_LIST = {
     'newsrc': '/root/newsource',
     'src': '/etc/apt/sources.list',
@@ -72,12 +69,3 @@ PETUUM_PROJECT = {
     'from': '/root/petuum/',
     'to': '/root/'
 }
-
-
-
-
-
-
-
-
-

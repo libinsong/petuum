@@ -17,11 +17,10 @@ Options:
 '''
 
 
-
-
 import pexpect
 from docopt import docopt
 from script_config import SSH_INFO
+
 
 def key_gen():
     print 'Generating SSH Key...'
@@ -31,7 +30,7 @@ def key_gen():
         i = gen.expect(['Overwrite', pexpect.TIMEOUT, pexpect.EOF],
                        timeout=1)
         if i == 0:
-            gen.sendline('y\n')         #overwrite old ssh key
+            gen.sendline('y\n')  # overwrite old ssh key
             gen.sendline('\n')
             gen.sendline('\n')
             print 'SSH Key Success'
@@ -50,7 +49,7 @@ def key_copy(ip, password):
                         pexpect.EOF], timeout=100)
         if i == 0:
             cpy.sendline(password + '\n')
-            print '\t{ip} Success'.format(ip = ip)
+            print '\t{ip} Success'.format(ip=ip)
         elif i == 1:
             cpy.sendline('yes\n')
             cpy.sendline(password + '\n')
@@ -73,7 +72,7 @@ def test_ip(ip):
         elif i == 1:
             test.sendline('yes\n')
             j = test.expect(['password', pexpect.TIMEOUT,
-                            pexpect.EOF], timeout=1)
+                             pexpect.EOF], timeout=1)
             if j == 0:
                 print '{ip} Failed'.format(ip=ip)
             elif j == 1:
@@ -127,6 +126,7 @@ def free_ssh():
         key_copy(info['ip'], info['password'])
     print 'Copy Complete'
 
+
 def close_ssh():
     for info in SSH_INFO:
         close_ip(info['ip'])
@@ -139,8 +139,6 @@ def main(args):
         free_ssh()
     if args['--close']:
         close_ssh()
-
-
 
 
 if __name__ == '__main__':

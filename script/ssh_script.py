@@ -66,7 +66,7 @@ def test_ip(ip):
     test = pexpect.spawn('ssh {ip}'.format(ip=ip))
     try:
         i = test.expect(['password', 'yes/no', pexpect.TIMEOUT,
-                         pexpect.EOF], timeout=1)
+                         pexpect.EOF], timeout=100)
         if i == 0:
             print '{ip} Failed'.format(ip=ip)
         elif i == 1:

@@ -42,7 +42,7 @@ SETUP_CMD = [
 ]
 
 SSH_INFO = [
-    PC_GROUP['newtest2']
+    PC_GROUP['mytest_1'], PC_GROUP['mytest_2']
 ]
 
 
@@ -54,16 +54,14 @@ FILE_COPY = {
     'archives': {
         'from': '/root/petuum_files/offlinePackage',
         'to': '/root/'
+    },
+    'source': {
+        'from': '/root/petuum_files/sources.list',
+        'to': '/etc/apt/sources.list.tmp'
     }
 }
 
 
-SOURCE_LIST = {
-    'newsrc': '/root/newsource',
-    'src': '/etc/apt/sources.list',
-    'backsrc': '/etc/apt/sources.list.back'
-
-}
 
 PETUUM_PROJECT = {
     'from': '/root/petuum/',
